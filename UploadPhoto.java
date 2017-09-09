@@ -9,6 +9,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import cl.mind.flashwzp.data.CurrentUSer;
+import cl.mind.flashwzp.data.EmailProcessor;
 import cl.mind.flashwzp.data.Nodes;
 import cl.mind.flashwzp.data.PhotoPreference;
 import cl.mind.flashwzp.models.LocalUser;
@@ -28,7 +29,7 @@ public class UploadPhoto {
     public void toFireBase(String path){
 
         final CurrentUSer currentUSer = new CurrentUSer();
-        String folder = currentUSer.sanitizedEmail(currentUSer.email() + "/");
+        String folder = new EmailProcessor().sanitizedEmail(currentUSer.email() + "/");
         String photoName = "avatar.jpeg";
         String baseUrl = "gs://flashwzp.appspot.com/avatars/";
         String refUrl = baseUrl + folder + photoName;
@@ -44,12 +45,13 @@ public class UploadPhoto {
                 user.setName(currentUSer.getCurrentUser().getDisplayName());
                 user.setPhoto(url);
                 user.setUid(currentUSer.uid());
-                String key = currentUSer.sanitizedEmail(currentUSer.email());
+                String key = new EmailProcessor().sanitizedEmail(currentUSer.email());
                 new Nodes().users().child(key).setValue(user);
 
             }
         });
 
+        //ADD: photo upload, ADD: user sent to db
 
     }
 }
